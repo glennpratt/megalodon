@@ -18,6 +18,12 @@ class Chef
 
         def install_package(name, version)
           brew('install', name, @new_resource.options)
+          info = get_response_from_command("brew info #{name}")
+          if m = info.match(/cp\s(.*)\s\~\/Library\/LaunchAgents\//)
+            run_command_with_systems_locale(
+              :command => "cp #{m[1]} ~/Library/LaunchAgents/"
+            )
+          end
         end
 
         # Homebrew doesn't really have a notion of upgrading packages, just
