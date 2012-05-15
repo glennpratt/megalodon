@@ -28,21 +28,38 @@ begin
       exit
   end
 
+  cwd = Dir.pwd
+
   # Create the databag directory here since it appears that the chef-solo run
   # will fail if it doesn't already exist. Wish there was a better way to do this…
   directory_name = "#{ENV['HOME']}/.megalodon/data_bags/vhosts"
   FileUtils.mkdir_p(directory_name) unless FileTest::directory?(directory_name)
 
-  cwd = Dir.pwd
-  gem_path = `gem env| grep "EXECUTABLE DIRECTORY"| awk -F': ' '{print $2}'`.strip
-  unless File.exists?("#{gem_path}/chef-solo")
-    raise "Cannot find chef-solo at #{gem_path}/chef-solo}"
+  # Copy "mega" roles to the users .megalodon directory because chef-solo
+  # only supports one roles directory.
+  roles_path = "#{ENV['HOME']}/.megalodon/roles"
+  FileUtils.mkdir_p(roles_path) unless FileTest::directory?(roles_path)
+
+  # Clear roles first.
+  Dir.glob("#{ENV['HOME']}/.megalodon/roles/mega_*.json") do |role_link|
+    File.delete(role_link)
+  end
+
+  # Symlink roles into place.
+  Dir.glob("#{cwd}/roles/mega_*.json") do |source|
+    target = "#{ENV['HOME']}/.megalodon/roles/#{File.basename(source)}"
+    File.symlink(source, target) unless FileTest.exist?(target)
+  end
+
+  solo_path = `which chef-solo`.strip
+  unless File.exists?(solo_path)
+    raise "Cannot find chef-solo at #{solo_path}}"
   end
 
   puts "Copying custom forumulas"
   system("cp #{cwd}/formulas/* /usr/local/Library/Formula/")
   puts "Starting chef-solo run"
-  system("#{gem_path}/chef-solo -j #{cwd}/config/#{runlist} -c #{cwd}/config/solo.rb")
+  system("#{solo_path} -j #{cwd}/config/#{runlist} -c #{cwd}/config/solo.rb")
 
 rescue LoadError => e
   puts e.message

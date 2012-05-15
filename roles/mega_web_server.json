@@ -1,20 +1,16 @@
 {
-  "name": "nginx_web_server",
+  "name": "mega_web_server",
   "default_attributes": {
   },
   "json_class": "Chef::Role",
-  "default": {
-  },
-  "override": {
-  },
   "run_list": [
-    "recipe[nginx]",
     "recipe[mysql::mariadb]",
-    "recipe[php::fpm]",
+    "recipe[php]",
     "recipe[php::module_apc]",
     "recipe[php::module_memcached]",
     "recipe[php::module_xdebug]",
-    "recipe[xhprof]"
+    "recipe[xhprof]",
+    "recipe[megalodon::apache_vhosts]"
   ],
   "description": "",
   "chef_type": "role",
