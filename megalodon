@@ -42,14 +42,21 @@ begin
 
   # Clear roles first.
   Dir.glob("#{ENV['HOME']}/.megalodon/roles/mega_*.json") do |role_link|
-    File.delete(role_link)
+    FileUtils.rm(role_link)
   end
 
   # Symlink roles into place.
   Dir.glob("#{cwd}/roles/mega_*.json") do |source|
     target = "#{ENV['HOME']}/.megalodon/roles/#{File.basename(source)}"
-    File.symlink(source, target) unless FileTest.exist?(target)
+    FileUtils.ln_s(source, target) unless FileTest.exist?(target)
   end
+
+  default_run_list = "#{cwd}/config/run_list.json"
+  user_node_data = "#{ENV['HOME']}/.megalodon/node.json"
+  FileUtils.cp(default_run_list, user_node_data)
+
+  mega_vhosts_data = "#{cwd}/config/run_vhosts.json"
+  node_attrib = (runlist == 'run_list.json') ? user_node_data : mega_vhosts_data
 
   solo_path = `which chef-solo`.strip
   unless File.exists?(solo_path)
@@ -59,7 +66,7 @@ begin
   puts "Copying custom forumulas"
   system("cp #{cwd}/formulas/* /usr/local/Library/Formula/")
   puts "Starting chef-solo run"
-  system("#{solo_path} -j #{cwd}/config/#{runlist} -c #{cwd}/config/solo.rb")
+  system("#{solo_path} -j #{node_attrib} -c #{cwd}/config/solo.rb")
 
 rescue LoadError => e
   puts e.message
