@@ -1,0 +1,21 @@
+{
+  "name": "mega_default",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "run_list": [
+    "recipe[megalodon]",
+    "recipe[megalodon::misc]",
+    "role[mega_web_server]",
+    "recipe[solr]",
+    "recipe[varnish]",
+    "recipe[redis]",
+    "recipe[mongodb]",
+    "recipe[php::module_mongo]",
+    "recipe[phpunit]"
+  ],
+  "description": "",
+  "chef_type": "role",
+  "override_attributes": {
+  }
+}
