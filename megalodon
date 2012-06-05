@@ -51,9 +51,10 @@ begin
     FileUtils.ln_s(source, target) unless FileTest.exist?(target)
   end
 
+  # Copy default runlist to user node attribs for first run.
   default_run_list = "#{cwd}/config/run_list.json"
   user_node_data = "#{ENV['HOME']}/.megalodon/node.json"
-  FileUtils.cp(default_run_list, user_node_data)
+  FileUtils.cp(default_run_list, user_node_data) unless FileTest.exist?(user_node_data)
 
   mega_vhosts_data = "#{cwd}/config/run_vhosts.json"
   node_attrib = (runlist == 'run_list.json') ? user_node_data : mega_vhosts_data
