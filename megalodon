@@ -33,7 +33,13 @@ begin
   directory_name = "#{ENV['HOME']}/.megalodon/data_bags/vhosts"
   FileUtils.mkdir_p(directory_name) unless FileTest::directory?(directory_name)
 
-  cwd = Dir.pwd
+  # Get Megalodon path.
+  if FileTest::exists?("#{Dir.pwd}/config/solo.rb")
+    cwd = Dir.pwd
+  else
+    cwd = `brew --prefix megalodon`.strip
+  end
+
   gem_path = `gem env| grep "EXECUTABLE DIRECTORY"| awk -F': ' '{print $2}'`.strip
   unless File.exists?("#{gem_path}/chef-solo")
     raise "Cannot find chef-solo at #{gem_path}/chef-solo}"
