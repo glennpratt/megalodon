@@ -12,7 +12,7 @@ You can use sudo for installing gems, but don't use sudo for anything else. If y
 
 Install megalodon:
 
-    brew install --HEAD https://raw.github.com/msonnabaum/megalodon/master/formulas/megalodon.rb
+    gem install megalodon
 
 Run megalodon:
 
