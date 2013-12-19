@@ -2,7 +2,7 @@ language: objective-c
 script:
   - rvm use system
   - gem build megalodon.gemspec
-  - gem install megalodon-*.gem
+  - sudo gem install megalodon-*.gem
   - gem contents megalodon
   - env
   - $(gem contents megalodon | grep /bin/) install
