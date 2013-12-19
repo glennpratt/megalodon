@@ -5,4 +5,4 @@ script:
   - sudo gem install megalodon-*.gem
   - gem contents megalodon
   - env
-  - $(gem contents megalodon | grep /bin/) install
+  - megalodon install
