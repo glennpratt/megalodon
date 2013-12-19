@@ -3,4 +3,5 @@ script:
   - gem build megalodon.gemspec
   - gem install megalodon-*.gem
   - gem contents megalodon
-  - $(gem contents megalodon | grep /bin/) install
+  - env
+  - GEM_PATH=/opt/chef/embedded/lib/ruby/site_ruby/1.9.1/ $(gem contents megalodon | grep /bin/) install
