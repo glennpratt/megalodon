@@ -3,6 +3,4 @@ script:
   - rvm use system
   - gem build megalodon.gemspec
   - sudo gem install megalodon-*.gem
-  - gem contents megalodon
-  - env
   - megalodon install
